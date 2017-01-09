@@ -255,29 +255,23 @@ pub fn ctr(
         key_size: KeySize,
         key: &[u8],
         iv: &[u8]) -> Box<SynchronousStreamCipher + 'static> {
-    if util::supports_aesni() {
-        let aes_dec = aesni::AesNiEncryptor::new(key_size, key);
-        let dec = Box::new(CtrMode::new(aes_dec, iv.to_vec()));
-        dec
-    } else {
-        match key_size {
-            KeySize::KeySize128 => {
-                let aes_dec = aessafe::AesSafe128EncryptorX8::new(key);
-                let dec = Box::new(CtrModeX8::new(aes_dec, iv));
-                dec
-            }
-            KeySize::KeySize192 => {
-                let aes_dec = aessafe::AesSafe192EncryptorX8::new(key);
-                let dec = Box::new(CtrModeX8::new(aes_dec, iv));
-                dec
-            }
-            KeySize::KeySize256 => {
-                let aes_dec = aessafe::AesSafe256EncryptorX8::new(key);
-                let dec = Box::new(CtrModeX8::new(aes_dec, iv));
-                dec
-            }
-        }
-    }
+	match key_size {
+		KeySize::KeySize128 => {
+			let aes_dec = aessafe::AesSafe128EncryptorX8::new(key);
+			let dec = Box::new(CtrModeX8::new(aes_dec, iv));
+			dec
+		}
+		KeySize::KeySize192 => {
+			let aes_dec = aessafe::AesSafe192EncryptorX8::new(key);
+			let dec = Box::new(CtrModeX8::new(aes_dec, iv));
+			dec
+		}
+		KeySize::KeySize256 => {
+			let aes_dec = aessafe::AesSafe256EncryptorX8::new(key);
+			let dec = Box::new(CtrModeX8::new(aes_dec, iv));
+			dec
+		}
+	}
 }
 
 /// Get the best implementation of a Ctr
